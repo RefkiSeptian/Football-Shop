@@ -26,6 +26,7 @@ class Product(models.Model):
 
     # DATA: name
     # METADATA: CharField, max_length=255
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255) # Panjang maksimal 255
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
