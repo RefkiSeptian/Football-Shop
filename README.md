@@ -31,7 +31,7 @@ url web -> https://refki-septian-footballshop.pbp.cs.ui.ac.id/
 
 2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
 penjelasan:  Client Request yang diterima oleh urls.py Level Proyek Django untuk melakukan pemeriksaan pola endpoint URL yang diminta. Jika pola URL cocok, request akan diteruskan melalui include('main.urls') ke views.py untuk diproses, namun jika tidak ditemukan akan menampilkan 404 Not Found. Di dalam views.py, fungsi akan memproses business logic dan dapat berinteraksi dengan models.py untuk mengambil atau memanipulasi data dari database, kemudian menggabungkan data tersebut dengan Template (file HTML) untuk menghasilkan response yang akan dikembalikan ke client. 
-![Bagan Client Request Django](<image\Bagan Client Request Django.png>)
+![Bagan Client Request Django](<image\Bagan%20Client%20Request%20Django.png>)
 
 
 3. Jelaskan peran settings.py dalam proyek Django!
