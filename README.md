@@ -12,7 +12,7 @@ url web -> https://refki-septian-footballshop.pbp.cs.ui.ac.id/
         template -> template adalah tampilan (hasil akhir) dari apps yang telah saya buat
 
     c. Melakukan routing pada proyek agar dapat menjalankan aplikasi main.
-    penjelasan: Routing di level aplikasi menentukan path URL spesifik dan menghubungkannya dengan fungsi view yang akan dijalankan. Ini seperti alamat detail dalam kompleks - menentukan jalan dan nomor rumah yang tepat. Setiap path di urls.py (main) langsung mengatur fitur mana yang akan diproses ketika user mengakses URL dengan path tertentu.
+    penjelasan: Routing di level proyek mengatur distribusi URL ke berbagai aplikasi menggunakan fungsi include(). Hal ini berperan sebagai koordinator utama yang mengarahkan traffic ke aplikasi yang tepat, analoginya seperti penunjuk arah ke provinsi atau kota.
 
     d. Membuat model pada aplikasi main dengan nama Product dan memiliki atribut wajib sebagai berikut.
     penjelasan: pada tahap ini saya membuat meta data atau rancangan bagaimana setiap informasi disimpan ke database. Mulai dari nama produk (maksimal panjangnya berapa) dan lain informasi - informasi lainnya yang nantinya akan dibutuhkan. Saya mengikuti ketentuan yang telah dituliskan saja.
@@ -21,7 +21,7 @@ url web -> https://refki-septian-footballshop.pbp.cs.ui.ac.id/
     penjelasan: pada tahap ini saya membuat fungsi yang berguna untuk menghandle request dari user dan menampilkan html yang sesuai dengan request tersebut. Seperti yang telah saya jelaskan sebelumnya, views.py menjadi penghubung antara models.py dan template. Namun, untuk saat ini data masih statis (belum mengambil dari data base) sehingga menuliskannya secara manual dan dimasukkan ke dalam placeholder pada html.
 
     f. Membuat sebuah routing pada urls.py aplikasi main untuk memetakan fungsi yang telah dibuat pada views.py.
-    penjelasan: Routing di level proyek mengatur distribusi URL ke berbagai aplikasi menggunakan fungsi include(). Hal ini berperan sebagai koordinator utama yang mengarahkan traffic ke aplikasi yang tepat, analoginya seperti penunjuk arah ke provinsi atau kota.
+    penjelasan: Routing di level aplikasi menentukan path URL spesifik dan menghubungkannya dengan fungsi view yang akan dijalankan. Ini seperti alamat detail dalam kompleks - menentukan jalan dan nomor rumah yang tepat. Setiap path di urls.py (main) langsung mengatur fitur mana yang akan diproses ketika user mengakses URL dengan path tertentu.
     
     g. Melakukan deployment ke PWS terhadap aplikasi yang sudah dibuat sehingga nantinya dapat diakses oleh teman-temanmu melalui Internet.
     penjelasan: Masuk ke halaman Pws dan membuat projek baru kemudian menambahkan allowed host pada settings.py dengan url web yang kita (supaya dapat diakses orang lain). Setelah itu melakukan git push pws master pada terminal untuk melakukan push ke pws
