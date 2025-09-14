@@ -201,48 +201,82 @@
     </style>
 </head>
 <body>
-   <div class="container">
-        <h1 class="page-title">⚽ Football Shop</h1>
-        
-        <!-- Single Product Card - Manchester United Jersey -->
-        <div class="product-card">
-            <!-- Featured Badge -->
-            <div class="featured-badge">Featured</div>
-            
-            <!-- Product Image -->
-            <div class="product-image">
-                <img src="" alt="Manchester United Home Jersey 2024">
-                <!-- Jika gambar tidak ada, akan muncul placeholder -->
-                <!-- <span class="placeholder">👕</span> -->
-            </div>
-            
-            <!-- Product Info -->
-            <div class="product-info">
-                <!-- Product Name -->
-                <h3 class="product-name">{{nama_produk}}</h3>
-                
-                <!-- Brand -->
-                <p class="product-brand">{{brand}}</p>
-                
-                <!-- Description -->
-                <p class="product-description">{{deskripsi}}</p>
-                
-                <!-- Price -->
-                <div class="product-price">{{harga}}</div>
-                
-                <!-- Stock Status -->
-                <div class="product-stock stock-available">{{stok}}</div>
-                
-                <!-- Add to Cart Button -->
-                <button class="add-to-cart">
-                    Tambah ke Keranjang
-                </button>
-            </div>
-        </div>
-    </div>
+    <h1>Football News</h1>
+
+<h5>NPM: </h5>
+<p>{{ npm }}</p>
+
+<h5>Name:</h5>
+<p>{{ name }}</p>
+
+<h5>Class:</h5>
+<p>{{ class }}</p>
+
+<a href="{% url 'main:add_product' %}">
+  <button>+ Add News</button>
+</a>
+
+<hr>
+
+{% if not news_list %}
+<p>Belum ada product.</p>
+{% else %}
+
+{% for news in news_list %}
+<div>
+    <div class="container">
+     <h1 class="page-title">Football Shop</h1>
+     
+     <!-- Single Product Card - Manchester United Jersey -->
+     <div class="product-card">
+         <!-- Featured Badge -->
+         <div class="featured-badge">Featured</div>
+         
+         <!-- Product Image -->
+         <div class="product-image">
+               {% if news.thumbnail %}
+                <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100", alt="gambar product">
+                <br />
+                {% endif %}
+             <!-- Jika gambar tidak ada, akan muncul placeholder -->
+             
+         </div>
+         
+         <!-- Product Info -->
+         <div class="product-info">
+             <!-- Product Name -->
+             <h3 class="product-name"><a href="{% url 'main:show_detail_product' product.id %}"></a>{{ product.name }}</h3>
+             
+             <!-- Brand -->
+             <p class="product-brand">{{ product.brand}}</p>
+             
+             <!-- Description -->
+             <p class="product-description">{{ product.deskripsi }}</p>
+             
+             <!-- Price -->
+             <div class="product-price">{{ prpduct.harga}}</div>
+             
+             <!-- Stock Status -->
+             <div class="product-stock stock-available">{{product.stok}}</div>
+             
+             <!-- Add to Cart Button -->
+             <a href="{% url 'main:show_detail_product' product.id %}"></a><button class="add-to-cart">
+                 Detail
+             </button></a>
+         </div>
+     </div>
+ </div>
+  
+</div>
+
+<hr>
+{% endfor %}
+
+{% endif %}
 </body>
 </html>
 
 
 
-<!-- sumber css dan html dari claude -->
+<!-- sumber css claude -->
+

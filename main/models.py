@@ -19,8 +19,8 @@ class Product(models.Model):
     # Field - field lain (atribut class)
     # Untuk liat tiap method ada parameter apa aja bisa dihover di atas method aja atau liat dokumentasi django
     price = models.DecimalField(max_digits=10,        # Total digit (termasuk desimal)
-    decimal_places=2,                                   # Jumlah digit desimal  
-    default=0.00,
+    decimal_places=1,                                   # Jumlah digit desimal  
+    default=0.0,
     validators=[MinValueValidator(0)],   # Harga tidak boleh negatif
     verbose_name='Harga')
 
@@ -35,6 +35,7 @@ class Product(models.Model):
     brand = models.CharField(max_length=225)
     stok = models.IntegerField(validators=[MinValueValidator(0)]) # Stok tidak boleh negatif
     
+
     def __str__(self):
         return self.name
     

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'main:show_main' %}"><button>← Back to Product List</button></a></p>
+
+<h1>{{ product.name }} dari {{ product.brand }}</h1>
+
+{% if product.thumbnail %}
+<img src="{{ product.thumbnail }}" alt="Product thumbnail" width="300">
+<br /><br />
+{% endif %}
+
+<p>{{ product.description }}</p>
+<h2>{{ product.price}}</h2>
+<h3>sisa barang {{ product.stok }}</h3>
+
+{% endblock content %}
+
