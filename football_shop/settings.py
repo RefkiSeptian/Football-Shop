@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "refki-septian-footballshop.pbp.cs.ui
 
 CSRF_TRUSTED_ORIGINS = [
     "https://refki-septian-footballshop.pbp.cs.ui.ac.id"
+
 ]
 
 
