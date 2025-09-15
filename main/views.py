@@ -32,7 +32,7 @@ def show_detail_product(request, id):
     product = get_object_or_404(Product, pk=id)
    
     context = {
-        'news': product
+        'product': product
     }
 
     return render(request, "show_detail_product.html", context)
