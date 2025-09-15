@@ -52,19 +52,43 @@ feedback: Penjelasan di tutorial sudah sangat baik, tetapi memang sebaiknya dila
 TUGAS III
 
 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+jawab: data adalah hal yang penting di sini, jadi ketika kita bisa mendapatkan lebih banyak data 
+maka itu akan lebih baik. Oleh karena itu kita memerlukan "jembatan" agar satu mesin atau aplikasi dapat
+bertukar data dengan mesin lain, di sinilah peran data delivery
 
 2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+jawab: menurut saya keduanya memiliki kekurangan dan keunggulan masing - masing, tetapi menurut saya yang lebih 
+baik itu adalah JSON karena kita tidak memerlukan banyak tag didalamnya implikasinya adalah proses 
+perpindahan data itu menjadi lebih cepat. Hal ini juga yang menjadi alasan mengapa json lebih populer.
 
 3. Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+jawab: fungsi dari method is_valid() pada form Django adalah untuk memastikan setiap data yang ada itu clean
+sesuai dengan tipe datanya dan kita membutuhkan ini supaya tidak menuliskan validasi yang berulang - ulang.
 
 4. Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+jawab: kita membutuhkan crsf_token supaya menghindari adanya request yang sebenarnya bukan datang dari pengguna, yang terjadi ketika kita tidak menambahkan csrf_token pada Django adalah penyerang dapat membuat buatan request dari user yang bisa saja merugikan user seperti 
+mengambil uang atau mengubah email. Hidden form + auto-submit JavaScript — buat form tersembunyi di situs penyerang yang POST ke endpoint target, lalu submit otomatis. Pengguna yang membuka halaman itu akan mengirim request ke target dengan cookie mereka.
+sumber: https://owasp.org/www-community/attacks/csrf
 
 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 
     a. Tambahkan 4 fungsi views baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML by ID, dan JSON by ID.
+    jawab: membuat fungsi yang menghandle mengirimkan semua data dalam format xml dan json (mengambil semua objek produk kemudian menggunakan
+    serializers untuk mentranslate ke xml atau json ) kemudian membuat fungsi yang mengirimkan 
+    data berdasarkan id dalam format json dan xml (mekanismenya sama tetapi kita menambahkan filter/get supaya mendapatkan data yang sesuai id). 
+
     b. Membuat routing URL untuk masing-masing views yang telah ditambahkan pada poin 1.
+    jawab: mengimpor fungsi - fungsi tersebut ke urls.py dan menambahkan path untuk masing - masing fungsi yang telah dibuat sebelumnya 
+
     c. Membuat halaman yang menampilkan data objek model yang memiliki tombol "Add" yang akan redirect ke halaman form, serta tombol "Detail" pada setiap data objek model yang akan menampilkan halaman detail objek.
+    jawab: membuat file html baru untuk menangani ini di templates yang mengextend file base.html kemudian memasukkan data apa saja yang
+    akan ditampilkan
+
     d. Membuat halaman form untuk menambahkan objek model pada app sebelumnya.
+    jawab: menambahkan file form.py (saya menuliskan field apa saja yang akan diminta) kemudian memanggil objeknya ketika membuat fungsi di view.py. Setelah itu saya membuat file html yang akan menghandle request ini.
+
     e. Membuat halaman yang menampilkan detail dari setiap data objek model.
+    jawab: membuat fungsi baru pada views.py yang mengambil product berdasarkan id request kemudian menambahkan file html baru untuk menghandle request ini.
 
 6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
+jawab: sudah cukup jelas dan sangat membantu
