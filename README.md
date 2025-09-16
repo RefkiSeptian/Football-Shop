@@ -92,3 +92,7 @@ sumber: https://owasp.org/www-community/attacks/csrf
 
 6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
 jawab: sudah cukup jelas dan sangat membantu
+
+SS postman
+
+![SS Postman](<3 (1).png>) ![SS Postman](<3 (2).png>) ![SS Postman](<3 (3).png>) ![SS Postman](<3 (4).png>)
