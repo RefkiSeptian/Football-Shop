@@ -13,5 +13,11 @@
 <h2>{{ product.price}}</h2>
 <h3>sisa barang {{ product.stok }}</h3>
 
+{% if products.user %}
+    <p>Penjual: {{ news.user.username }}</p>
+{% else %}
+    <p>Penjual: Anonymous</p>
+{% endif %}
+
 {% endblock content %}
 

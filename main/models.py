@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 
 class Product(models.Model):       
     '''Product "mewarisi" dari models.Model jadi kita diwarisi sifat class tersebut
@@ -34,6 +35,7 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False) 
     brand = models.CharField(max_length=225)
     stok = models.IntegerField(validators=[MinValueValidator(0)]) # Stok tidak boleh negatif
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     
 
     def __str__(self):
