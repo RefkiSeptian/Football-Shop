@@ -81,7 +81,7 @@ def show_json_by_id(request, news_id):
        return HttpResponse(status=404)
    
 def register(request):
-    form = UserCreationForm()
+    form = UserCreationForm() # Kasih formulir kosong ke user untuk di isi
 
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -94,10 +94,10 @@ def register(request):
 
 def login_user(request):
    if request.method == 'POST':
-      form = AuthenticationForm(data=request.POST)
+      form = AuthenticationForm(data=request.POST) # Kasih formulir kosong untuk login 
 
       if form.is_valid():
-        user = form.get_user()
+        user = form.get_user()  # cari user dengan username bla bla di data base dan check apakah passwordnya sama dengan yang dimasukkan di formulir
         login(request, user)
         response = HttpResponseRedirect(reverse("main:show_main"))
         response.set_cookie('last_login', str(datetime.datetime.now()))

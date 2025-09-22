@@ -1,6 +1,6 @@
 url web -> https://refki-septian-footballshop.pbp.cs.ui.ac.id/
 
-TUGAS II
+**TUGAS II**
 
 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 
@@ -49,7 +49,7 @@ penjelasan: Django mudah dipahami untuk pemula. Konsep pemisahan tugas (MVT) mem
 6. Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?
 feedback: Penjelasan di tutorial sudah sangat baik, tetapi memang sebaiknya dilakukan secara offline karena interaksi dengan para asdos menjadi lebih mudah
 
-TUGAS III
+**TUGAS III**
 
 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
 jawab: data adalah hal yang penting di sini, jadi ketika kita bisa mendapatkan lebih banyak data 
@@ -97,14 +97,33 @@ SS postman
 
 ![SS Postman](<3 (1).png>) ![SS Postman](<3 (2).png>) ![SS Postman](<3 (3).png>) ![SS Postman](<3 (4).png>)
 
-Tugas IV
+**Tugas IV**
 
 1. Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+Jawab: Django AuthenticationForm adalah form yang hanya menanyakan username dan password dari user. Setelah user memasukkan username dan password Django akan memeriksa apakah ada user dengan username tersebut dan apakah passwordnya cocok, kalau semuanya cocok maka akan masuk ke halaman tertentu. Kelebihannya ini adalah validasi input, sudah siap pakai, dan sudah memenuhi kebutuhan dasar untuk login system. Kekurangannya adalah tidak menyediakan password strength checking, limit untuk login sehingga rawan brute force, dan lain sebagainya. 
+source: https://docs.djangoproject.com/en/5.2/topics/auth/
+
 2. Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+Jawab: autentikasi adalah proses verifikasi siapa user yang sedang login sedangkan otorisasi adalah proses verifikasi apakah suatu user ada akses ke halaman tertentu atau tidak. Django mengelola autentikasi melalui model User, sistem authentication backend untuk memeriksa kredensial, middleware (AuthenticationMiddleware) yang menempelkan informasi user ke request.user, serta sesi (session) dan cookie untuk menjaga status login/logout. Django mengimplementasikan otorisasi dengan sistem permissions berbasis model, groups untuk mengelola izin secara kolektif, serta fungsi dan dekorator seperti user.has_perm() atau @login_required untuk membatasi akses pada view atau resource sesuai hak akses pengguna.
+source: https://docs.djangoproject.com/en/5.2/topics/auth/ 
+
+
 3. Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+Jawab: kelebihan dari session dan cookies adalah membuat website tidak pelupa atau menjadi ada ingatan. Misalnya user A mengirimkan request sebagai user A kemudian ada user B mengirimkan request berbeda, setelah itu user A meminta request lagi tetapi server mengenali tidak ingat request terakhir user A tadi apa melainkan dia ingat request terakhir (user B). Kelebihan dari cookies adalah data kecil disimpan di sisi client yang bisa bertahan bahkan setelah browser ditutup. Sementara kelebihan session adalah menyimpan data di sisi server sehingga lebih aman terhadap modifikasi dari client-side. Kekurangan dari cookies adalah memiliki batasan ukuran (sekitar 4KB), kurang aman karena data tersimpan di klien sehingga terekspos untuk modifikasi atau pencurian jika tidak dikonfigurasi dengan baik. Kekurangan Session adalah membebani server dalam hal penyimpanan dan pengelolaan session untuk banyak pengguna (karena disimpan di server).
+source: https://www.geeksforgeeks.org/javascript/difference-between-session-and-cookies/ 
+
+
 4. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+Jawab: Cookies tidak sepenuhnya aman secara default karena rentan terhadap serangan seperti penyadapan di jaringan tanpa HTTPS (hanya HTTP), pencurian melalui XSS jika tidak memakai flag HttpOnly, dan penyalahgunaan pada request lintas situs. Django menangani ini dengan menyediakan berbagai pengaturan keamanan seperti SESSION_COOKIE_SECURE dan CSRF_COOKIE_SECURE agar cookie hanya dikirim lewat HTTPS, SESSION_COOKIE_HTTPONLY untuk mencegah akses JavaScript mencegah XSS, serta opsi SameSite untuk membatasi pengiriman lintas situs.
+source: https://www.browserstack.com/guide/cookie-secure 
+
+
 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
     a. Mengimplementasikan fungsi registrasi, login, dan logout untuk memungkinkan pengguna mengakses aplikasi sebelumnya sesuai dengan status login/logoutnya.
+    jawab: Membuat fungsi baru untuk registrasi, login, dan logout. Kemudian menambahkan urls (path menuju ke halaman yang telah dibuat) dan membuat template html untuk register dan login. Menambahkan dekorator untuk membatasi pengguna yang sudah login saja yang mendapatkan akses ke halaman tertentu.
     b. Membuat dua (2) akun pengguna dengan masing-masing tiga (3) dummy data menggunakan model yang telah dibuat sebelumnya untuk setiap akun di lokal.
+    jawab: membuat dua akun user dengan username berbeda kemudian menambahkan produk untuk masing masing akun.
     c. Menghubungkan model Product dengan User.
+    jawab: Menambahkan relasi antara product dan user kemudian melakukan migrasi.
     d. Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last_login pada halaman utama aplikasi.
+    jawab: menambahkan response.set_cookie('last_login', str(datetime.datetime.now())) untuk mendaftarkan cookie last_login di response dengan isi timestamp terkini. Kemudian menambilkan informasi last_login melalui HTML.

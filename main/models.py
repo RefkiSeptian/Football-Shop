@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
 class Product(models.Model):       
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     '''Product "mewarisi" dari models.Model jadi kita diwarisi sifat class tersebut
     yang ada method untuk mengakses/melakukan perubahan pada database jadi kita tidak perlu membuat methodnya lagi'''
     # Nama variable harus jelas dan bebas apa saja
