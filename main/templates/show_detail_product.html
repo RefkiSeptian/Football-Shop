@@ -13,7 +13,7 @@
 <h2>{{ product.price}}</h2>
 <h3>sisa barang {{ product.stok }}</h3>
 
-{% if products.user %}
+{% if product.user %}
     <p>Penjual: {{ product.user.username }}</p>
 {% else %}
     <p>Penjual: Anonymous</p>
