@@ -17,7 +17,7 @@
       {% if form.non_field_errors %}
         <div class="mb-6">
           {% for error in form.non_field_errors %}
-            <div class="px-4 py-3 rounded-md text-sm border bg-red-50 border-red-200 text-red-700">
+            <div class="px-4 py-3 rounded-md text-sm border bg-gray-100 border-gray-300 text-gray-700">
               {{ error }}
             </div>
           {% endfor %}
@@ -29,7 +29,7 @@
           {% for field, errors in form.errors.items %}
             {% if field != '__all__' %}
               {% for error in errors %}
-                <div class="px-4 py-3 rounded-md text-sm border bg-red-50 border-red-200 text-red-700 mb-2">
+                <div class="px-4 py-3 rounded-md text-sm border bg-gray-100 border-gray-300 text-gray-700 mb-2">
                   <strong>{{ field|title }}:</strong> {{ error }}
                 </div>
               {% endfor %}
@@ -48,7 +48,7 @@
             name="username" 
             type="text" 
             required 
-            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-green-500 transition-colors" 
+            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-gray-700 transition-colors" 
             placeholder="Enter your username">
         </div>
 
@@ -59,13 +59,13 @@
             name="password" 
             type="password" 
             required 
-            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-green-500 transition-colors" 
+            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-gray-700 transition-colors" 
             placeholder="Enter your password">
         </div>
 
         <button 
           type="submit" 
-          class="w-full bg-green-600 text-white font-medium py-3 px-4 rounded-md hover:bg-green-700 transition-colors">
+          class="w-full bg-gray-800 text-white font-medium py-3 px-4 rounded-md hover:bg-gray-900 transition-colors">
           Sign In
         </button>
       </form>
@@ -78,9 +78,9 @@
               class="
                 px-4 py-3 rounded-md text-sm border
                 {% if message.tags == 'success' %}
-                  bg-green-50 border-green-200 text-green-700
+                  bg-gray-100 border-gray-300 text-gray-700
                 {% elif message.tags == 'error' %}
-                  bg-red-50 border-red-200 text-red-700
+                  bg-gray-100 border-gray-300 text-gray-700
                 {% else %}
                   bg-gray-50 border-gray-200 text-gray-700
                 {% endif %}
@@ -94,7 +94,7 @@
       <div class="mt-6 text-center pt-6 border-t border-gray-200">
         <p class="text-gray-500 text-sm">
           Don't have an account? 
-          <a href="{% url 'main:register' %}" class="text-green-600 hover:text-green-700 font-medium">
+          <a href="{% url 'main:register' %}" class="text-gray-700 hover:text-gray-900 font-medium">
             Register Now
           </a>
         </p>

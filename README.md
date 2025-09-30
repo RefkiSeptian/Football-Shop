@@ -149,4 +149,22 @@ jawab: margin adalah jarak antar elemen, border adalah garis pembatas elemen, da
 jawab: Flexbox adalah sistem layout CSS3 yang dirancang untuk mengatur elemen dalam satu dimensi (horizontal row atau vertical column).
 Dengan flexbox, elemen anak dari sebuah container secara otomatis akan menyesuaikan ukuran tanpa harus kita hitung manual jarak - jaraknya.
 
- 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+a. Implementasikan fungsi untuk menghapus dan mengedit product.
+jawab: Membuat fungsi pada views.py di mana di dalamnya kita mengambil product dengan id yang dimaksud kemudian mengirimkan formulir kepada user untuk di isi kembali dan setelahnya kita save lagi di data base dengan menimpa data lama bukan membuat row baru. Kemudian untuk fitue menghapus produk kurang lebih sama yakni kita mengambil product berdasarkan id nya kemudian dihapus dari database.
+
+b. Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebelumnya menggunakan CSS atau CSS framework (seperti Bootstrap, Tailwind, Bulma) dengan ketentuan sebagai berikut:
+
+    b.1 Kustomisasi halaman login, register, tambah product, edit product, dan detail product semenarik mungkin.
+    jawab: membuat file html untuk masing masing halaman kemudian menyesuaikan design yang diinginkan dengan mengedit class pada tag
+ 
+    Kustomisasi halaman daftar product menjadi lebih menarik dan responsive. Kemudian, perhatikan kondisi berikut:
+    
+    b.3 Jika pada aplikasi belum ada product yang tersimpan, halaman daftar product akan menampilkan gambar dan pesan bahwa belum ada product yang terdaftar. Jika sudah ada product yang tersimpan, halaman daftar product akan menampilkan detail setiap product dengan menggunakan card (tidak boleh sama persis dengan desain pada Tutorial!).
+    jawab: membuat conditional pada halaman main.html jika ada ada product maka akan loop semua product dan memanggi card_product.html jika tidak maka akan menampilkan kalimat penjelasan.
+
+    b.5 Untuk setiap card product, buatlah dua buah button untuk mengedit dan menghapus product pada card tersebut!
+    jawab: menambahkan botton dan redirect ke halaman edit atau balik ke halaman main ketika menghapus. Kemudian dari masing masing dari tombol akan mentrigger fungsi di views.py
+
+    b.6 Buatlah navigation bar (navbar) untuk fitur-fitur pada aplikasi yang responsive terhadap perbedaan ukuran device, khususnya mobile dan desktop.
+    jawab: dengan menambahkan <meta name="viewport" content="width=device-width, initial-scale=1"> pada blok meta di template base
