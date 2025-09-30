@@ -56,7 +56,7 @@ def show_detail_product(request, id):
 
 def show_xml(request):
      news_list = Product.objects.all()
-     xml_data = serializers.serialize("xml", news_list)
+     xml_data = serializers.serialize("xml", news_list) # translate menjadi xml
      return HttpResponse(xml_data, content_type="application/xml")
 
 def show_json(request):

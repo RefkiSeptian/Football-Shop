@@ -32,7 +32,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "refki-septian-footballshop.pbp.cs.ui.ac.id"]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://refki-septian-footballshop.pbp.cs.ui.ac.id"
+    "https://refki-septian-footballshop.pbp.cs.ui.ac.id" # daftar domain yang boleh pakai "kunci" 
 
 ]
 
