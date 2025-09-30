@@ -127,3 +127,26 @@ source: https://www.browserstack.com/guide/cookie-secure
     jawab: Menambahkan relasi antara product dan user kemudian melakukan migrasi.
     d. Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last_login pada halaman utama aplikasi.
     jawab: menambahkan response.set_cookie('last_login', str(datetime.datetime.now())) untuk mendaftarkan cookie last_login di response dengan isi timestamp terkini. Kemudian menambilkan informasi last_login melalui HTML.
+
+**Tugas V**
+
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+jawab: !important selalu didahulukan, lalu diikuti oleh inline style (ditulis langsung pada atribut elemen), kemudian ID selector, dilanjutkan dengan class atau pseudo-class selector, dan terakhir element selector; jika ada dua aturan dengan tingkat prioritas sama, maka aturan yang ditulis paling akhir akan digunakan, sementara jika tidak ada aturan khusus maka elemen akan mewarisi style dari parent (mirip inheritance di python) atau memakai nilai default bawaannya.
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+jawab: responsive design menjadi sangat penting karena user mengakses web kita lewat perangkat yang bermacam macam sehingga untuk kenyamanan user dalam menggunakan/mengunjungi website lewat perangkat apapun kita harus membuat website kita responsive.Contoh yang sudah responsive adalah YouTube, saat dibuka di desktop, tata letaknya menampilkan sidebar, rekomendasi video di kanan, dan player besar; ketika dibuka di smartphone, sidebar otomatis jadi menu tersembunyi (hamburger menu), rekomendasi dipindahkan ke bawah player, dan tombol-tombol lebih besar agar mudah diklik jari. Kemudian untuk contoh yang tidak responsive adalah https://dequeuniversity.com/library/responsive/1-non-responsive karena ketika dibuka di smartphone tulisannya terpotong.
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+jawab: margin adalah jarak antar elemen, border adalah garis pembatas elemen, dan padding adalah jarak isi dengan border. Ketiganya membentuk CSS box model, yang mengatur bagaimana elemen HTML ditampilkan di halaman web. Misal kita ingin membuat sebuah box:
+.box {
+    margin: 30px;               /* jarak antar elemen */
+    border: 3px solid blue;     /* garis di sekitar elemen */
+    padding: 20px;              /* jarak isi ke border */
+    background-color: lightgray;
+}
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+jawab: Flexbox adalah sistem layout CSS3 yang dirancang untuk mengatur elemen dalam satu dimensi (horizontal row atau vertical column).
+Dengan flexbox, elemen anak dari sebuah container secara otomatis akan menyesuaikan ukuran tanpa harus kita hitung manual jarak - jaraknya.
+
+ 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
