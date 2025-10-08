@@ -10,5 +10,37 @@
   </head>
   <body>
     {% block content %} {% endblock content %}
+    {% include 'modal.html' %}
+    {% include 'toast.html' %}
+    <script src="{% static 'js/toast.js' %}"></script>
+    {% if messages %}
+      {% for message in messages %}
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            showToast("{{ message|escapejs }}", "{{ message.tags }}");
+          });
+        </script>
+      {% endfor %}
+    {% endif %}
+  <script>
+  async function logoutUser() {
+      const response = await fetch("{% url 'main:logout' %}", {
+          method: "POST",
+          headers: { 
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+          showToast(data.message, "success");
+          setTimeout(() => window.location.href = "{% url 'main:login' %}", 1000);
+      } else {
+          showToast("Logout gagal!", "error");
+      }
+  }
+</script>
   </body>
 </html>

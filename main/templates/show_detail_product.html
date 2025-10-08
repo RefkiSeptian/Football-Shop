@@ -15,98 +15,94 @@
                 ← Back to Products
             </a>
         </div>
-        
-        <!-- Product Card -->
-        <article class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+
+        <!-- Loading State -->
+        <div id="loading-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+            <svg class="animate-spin h-8 w-8 text-green-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <p class="text-gray-600 mt-3">Loading product detail...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+            <div class="w-16 h-16 mx-auto mb-4">
+                <div class="text-red-500 text-5xl">⚠️</div>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Failed to load product</h3>
+            <p class="text-gray-500">Please try again later.</p>
+        </div>
+
+        <!-- Product Content -->
+        <article id="product-content" class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hidden">
             
             <!-- Header -->
             <div class="p-6 sm:p-8">
-                <div class="flex flex-wrap items-center gap-2 mb-4">
-                    {% if product.is_featured %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gray-700 text-white">
-                            Featured
-                        </span>
-                    {% endif %}
-                    {% if product.stok == 0 %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800">
-                            Out of Stock
-                        </span>
-                    {% else %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-700">
-                            In Stock
-                        </span>
-                    {% endif %}
-                </div>
+                <div id="status-badges" class="flex flex-wrap items-center gap-2 mb-4"></div>
                 
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-2">
-                    {{ product.name }}
-                </h1>
-                <p class="text-gray-600 mb-4">Brand: {{ product.brand }}</p>
+                <h1 id="product-title" class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-2"></h1>
+                <p id="product-brand" class="text-gray-600 mb-4"></p>
                 
                 <div class="flex flex-wrap items-center text-sm text-gray-500 gap-4">
-                    <span class="text-lg font-semibold text-gray-800">
-                        Rp {{ product.price }}
-                    </span>
-                    <span class="text-gray-700">
-                        Sisa stok: {{ product.stok }}
-                    </span>
+                    <span id="product-price" class="text-lg font-semibold text-gray-800"></span>
+                    <span id="product-stock" class="text-gray-700"></span>
                 </div>
             </div>
 
             <!-- Product Image -->
-            {% if product.thumbnail %}
-                <div class="px-6 sm:px-8">
-                    <img src="{{ product.thumbnail }}" 
-                         alt="{{ product.name }}" 
-                         class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg">
-                </div>
-            {% endif %}
+            <div id="product-image-container" class="px-6 sm:px-8 hidden">
+                <img id="product-image" class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg">
+            </div>
 
             <!-- Description -->
             <div class="p-6 sm:p-8">
                 <div class="prose prose-lg max-w-none">
-                    <div class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg">
-                        {{ product.description }}
-                    </div>
+                    <div id="product-description" class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg"></div>
                 </div>
             </div>
 
             <!-- Seller & Actions -->
-            <div class="border-t border-gray-200 p-6 sm:p-8 bg-gray-50">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <div class="font-medium text-gray-900">
-                            {% if product.user %}
-                                <p>Seller: {{ product.user.username }}</p>
-                            {% else %}
-                                <p>Seller: Anonymous</p>
-                            {% endif %}
-                        </div>
-                        <p class="text-sm text-gray-500">Product Owner</p>
-                    </div>
-                    
-                    <div class="flex space-x-3">
-                        {% if user.is_authenticated and product.user == user %}
-                            <a href="{% url 'main:edit_product' product.id %}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
-                                Edit
-                            </a>
-                            <a href="{% url 'main:delete_product' product.id %}" class="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-900 transition">
-                                Delete
-                            </a>
-                        {% endif %}
-
-                        {% if product.stok > 0 %}
-                            <form action="{% url 'main:show_detail_product' product.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="px-5 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition font-medium">
-                                    Beli
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
+            <div class="border-t border-gray-200 p-6 sm:p-8 bg-gray-50 flex justify-between">
+                <div>
+                    <p id="product-seller" class="font-medium text-gray-900"></p>
+                    <p class="text-sm text-gray-500">Product Owner</p>
                 </div>
+                <div id="action-buttons" class="flex space-x-3"></div>
             </div>
         </article>
     </div>
 </div>
+
+<script>
+(async function() {
+    const PRODUCT_API_ENDPOINT = "{% url 'main:show_json_by_id' product.id %}";
+    const CURRENT_USER_ID = "{{ user.id|default_if_none:'' }}";
+
+    try {
+        const res = await fetch(PRODUCT_API_ENDPOINT);
+        if (!res.ok) throw new Error();
+        const product = await res.json();
+
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("product-content").classList.remove("hidden");
+
+        document.getElementById("product-title").innerText = product.name;
+        document.getElementById("product-brand").innerText = "Brand: " + product.brand;
+        document.getElementById("product-price").innerText = "Rp " + product.price;
+        document.getElementById("product-stock").innerText = "Sisa stok: " + product.stok;
+        document.getElementById("product-description").innerText = product.description;
+        document.getElementById("product-seller").innerText = "Seller: " + (product.user_username || "Anonymous");
+
+        if (product.thumbnail) {
+            document.getElementById("product-image-container").classList.remove("hidden");
+            document.getElementById("product-image").src = product.thumbnail;
+        }
+    } catch (e) {
+        document.getElementById("loading-state").classList.add("hidden");
+        document.getElementById("error-state").classList.remove("hidden");
+    }
+})();
+</script>
+
 {% endblock content %}

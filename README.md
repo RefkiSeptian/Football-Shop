@@ -168,3 +168,16 @@ b. Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebe
 
     b.6 Buatlah navigation bar (navbar) untuk fitur-fitur pada aplikasi yang responsive terhadap perbedaan ukuran device, khususnya mobile dan desktop.
     jawab: dengan menambahkan <meta name="viewport" content="width=device-width, initial-scale=1"> pada blok meta di template base
+
+**Tugas VI**
+
+ 1. Apa perbedaan antara synchronous request dan asynchronous request?
+ jawab: kalau synchronous eksekusi akan terhenti sampai response diterima sedangkan untuk asynchronous program tetap berjalan walaupun response belum diterima, tetapi ketika sudah ada response akan ditangani melalui callback.
+ 2. Bagaimana AJAX bekerja di Django (alur request–response)?
+ jawab: Ketika pengguna menekan tombol Edit atau Delete, JavaScript mengirim permintaan asynchronous (menggunakan fetch() atau $.ajax) ke endpoint Django sambil menyertakan product_id dan data form jika dalam mode edit. Di sisi server, view Django menerima request tersebut, lalu mencari objek Product berdasarkan ID. Jika aksi adalah delete, objek langsung dihapus. Jika edit, data produk diperbarui sesuai input. Setelah itu server membalas dengan JSON seperti {"status": "success"}. Begitu respons diterima, JavaScript segera mengubah tampilan tanpa me-refresh halaman — misalnya menghapus elemen produk dari DOM saat delete, atau mengganti teks nama dan harga saat edit. Dengan alur ini, proses edit dan hapus terasa instan serta lebih interaktif dibanding reload penuh halaman.
+ 3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+ jawab: Dengan menggunakan ajax setiap kali ada pembaruan pada bagian tertentu web kita memungkinkan pembaruan sebagian halaman tanpa perlu me-reload seluruh halaman web, sehingga interaksi menjadi lebih cepat dan responsif.
+ 4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+ jawab: Dengan memastikan setiap request POST melalui AJAX harus menyertakan CSRF token.
+ 5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+ jawab: AJAX membuat interaksi lebih cepat, mengurangi reload halaman, dan meningkatkan kenyamanan pengguna.

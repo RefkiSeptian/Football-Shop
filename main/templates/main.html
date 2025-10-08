@@ -19,13 +19,18 @@
     <!-- Filter & Info Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-white rounded-lg border border-gray-200 p-4">
       <div class="flex space-x-3 mb-4 sm:mb-0">
-        <a href="?" class="{% if request.GET.filter == 'all' or not request.GET.filter  %} bg-gray-800 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-900 hover:text-white">
-          All Product
-        </a>
-        <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-gray-800 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-900 hover:text-white">
-          My Product
-        </a>
+        <button id="filter-all" class="bg-gray-800 text-white px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-900 hover:text-white">All Product</button>
+        <button id="filter-my" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-900 hover:text-white">My Product</button>
       </div>
+
+      <div id="loading" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+        <svg class="animate-spin h-8 w-8 text-green-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+        <p class="text-gray-600 mt-3">Loading product</p>
+      </div>
+
       <div class="flex items-center space-x-4 text-sm text-gray-500">
         <div>NPM: {{ npm }}</div>
         <div>Name: {{ name }}</div>
@@ -34,35 +39,249 @@
           <div>Last login: {{ last_login }}</div>
         {% endif %}
       </div>
+
       <div>
-        <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+        <button onclick="showModal()" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
           + Add Product
-        </a>
+        </button>
         <a href="{% url 'main:logout' %}" class="ml-2 inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-800 transition-colors">
           Logout
         </a>
       </div>
     </div>
 
-    <!-- Product Grid -->
-    {% if not product_list %}
-      <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-        <div class="w-32 h-32 mx-auto mb-4">
-          <img src="{% static 'image/no-product.png' %}" alt="No product available" class="w-full h-full object-contain">
-        </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No product found</h3>
-        <p class="text-gray-500 mb-6">Be the first to add products to your shop.</p>
-        <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
-          + Add Product
-        </a>
+    <!-- AJAX Product Grid -->
+    <div id="error" class="bg-white rounded-lg border border-red-200 p-12 text-center text-red-600 hidden">
+      Gagal memuat produk. Silakan coba lagi.
+    </div>
+
+    <div id="empty" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+      <div class="w-32 h-32 mx-auto mb-4">
+        <img src="{% static 'image/no-product.png' %}" alt="No product available" class="w-full h-full object-contain">
       </div>
-    {% else %}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for product in product_list %}
-          {% include 'card_product.html' with product=product %}
-        {% endfor %}
-      </div>
-    {% endif %}
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No product found</h3>
+      <p class="text-gray-500 mb-6">Be the first to add products to your shop.</p>
+      <button onclick="showModal()" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+        + Add Product
+      </button>
+    </div>
+
+    <div id="grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
   </div>
 </div>
+
+<!-- SCRIPT AJAX -->
+<script>
+  let currentMode = "add"; // default add
+  const PRODUCT_API_ENDPOINT = "{% url 'main:show_json' %}";
+  const CURRENT_USER_ID = "{{ user.id|default_if_none:'' }}";
+
+  const loadingSpinner = document.getElementById('loading');
+  const errorMessage = document.getElementById('error');
+  const emptyStateDisplay = document.getElementById('empty');
+  const productGridContainer = document.getElementById('grid');
+  const showAllProductsButton = document.getElementById('filter-all');
+  const showMyProductsButton = document.getElementById('filter-my');
+
+  let activeFilter = 'all';
+  let allProductData = [];
+
+  function updateFilterButtonsAppearance() {
+    const activeClass = 'bg-gray-800 text-white px-4 py-2 rounded-md font-medium';
+    const inactiveClass = 'bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md';
+
+    showAllProductsButton.className = activeFilter === 'all' ? activeClass : inactiveClass;
+    showMyProductsButton.className = activeFilter === 'my' ? activeClass : inactiveClass;
+  }
+
+  function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+    loadingSpinner.classList.toggle('hidden', !showLoading);
+    errorMessage.classList.toggle('hidden', !showError);
+    emptyStateDisplay.classList.toggle('hidden', !showEmpty);
+    productGridContainer.classList.toggle('hidden', !showGrid);
+  }
+
+function buildProductCardElement(product) {
+  const card = document.createElement('div');
+  card.className = 'bg-white p-4 border rounded-lg shadow';
+
+  card.innerHTML = `
+    <img src="${product.thumbnail || '/static/image/no-product.png'}" class="w-full h-40 object-cover rounded mb-2">
+    <h3 class="font-bold">${product.name}</h3>
+    <p class="text-sm text-gray-600">${product.brand}</p>
+    <p class="text-green-700 font-semibold">Rp ${product.price}</p>
+    <p class="text-sm">Stock: ${product.stok}</p>
+
+    ${Number(product.user_id) === Number(CURRENT_USER_ID) ? `
+      <div class="mt-3 flex space-x-2">
+        <button class="edit-btn text-blue-600 hover:underline text-sm" data-id="${product.id}">Edit</button>
+        <button class="delete-btn text-red-600 hover:underline text-sm" data-id="${product.id}">Delete</button>
+      </div>
+    ` : ''}
+  `;
+
+  return card;
+}
+
+
+  function renderAllProductCards(products) {
+    productGridContainer.innerHTML = '';
+    products.forEach(product => {
+      const card = buildProductCardElement(product);
+      productGridContainer.appendChild(card);
+    });
+  }
+
+  function filterAndDisplayProducts() {
+    updateFilterButtonsAppearance();
+    const filtered = activeFilter === 'all' ? allProductData : allProductData.filter(p => Number(p.user_id) === Number(CURRENT_USER_ID));
+    if (filtered.length === 0) {
+      displayPageSection({ showEmpty: true });
+    } else {
+      renderAllProductCards(filtered);
+      displayPageSection({ showGrid: true });
+    }
+  }
+
+  async function fetchProductsFromServer() {
+    try {
+      displayPageSection({ showLoading: true });
+      const response = await fetch(PRODUCT_API_ENDPOINT, { headers: { 'Accept': 'application/json' } });
+      if (!response.ok) throw new Error();
+      allProductData = await response.json();
+      filterAndDisplayProducts();
+    } catch {
+      displayPageSection({ showError: true });
+    }
+  }
+
+  function initializeProductPage() {
+    showAllProductsButton.addEventListener('click', () => { activeFilter = 'all'; filterAndDisplayProducts(); });
+    showMyProductsButton.addEventListener('click', () => { activeFilter = 'my'; filterAndDisplayProducts(); });
+    fetchProductsFromServer();
+  }
+
+  initializeProductPage();
+
+  document.addEventListener('productAdded', function() {
+    fetchProductsFromServer();
+  });
+
+  
+  async function editProduct(productId) {
+  console.log("Edit clicked", productId);
+  const res = await fetch(`/json/${productId}/`);
+  const data = await res.json();
+
+  document.getElementById("name").value = data.name;
+  document.getElementById("brand").value = data.brand;
+  document.getElementById("price").value = data.price;
+  document.getElementById("stok").value = data.stok;
+  document.getElementById("thumbnail").value = data.thumbnail;
+  document.getElementById("description").value = data.description;
+  document.getElementById("category").value = data.category;
+  document.getElementById("is_featured").checked = data.is_featured;
+
+  showModal('edit', data);
+}
+
+
+async function updateProductEntry(productId) {
+  console.log("Update URL:", `/product/${productId}/edit`);
+  const response = await fetch(`/product/${productId}/edit`, {
+    method: "POST",
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    body: new FormData(document.querySelector('#productForm')),
+  });
+
+  const data = await response.json();
+  console.log("Update response:", data);
+
+  if (data.status === "success") {
+    hideModal();
+    showToast("Produk berhasil diperbarui!", "Data sudah tersimpan", "success");
+    fetchProductsFromServer();
+  } else {
+    showToast("Gagal update produk", "Periksa form anda", "error");
+  }
+}
+function getCSRFToken() {
+  return document.cookie.split('; ')
+    .find(row => row.startsWith('csrftoken='))
+    ?.split('=')[1];
+}
+let currentDeleteId = null;
+
+function openDeleteModal(id) {
+  currentDeleteId = id;
+
+  const editModal = document.getElementById('crudModal');
+  if (editModal && !editModal.classList.contains('hidden')) {
+    hideModal();
+  }
+ 
+  const modal = document.getElementById('deleteModal');
+  const content = document.getElementById('deleteModalContent');
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    content.classList.remove('opacity-0', 'scale-95');
+    content.classList.add('opacity-100', 'scale-100');
+  }, 50);
+
+  document.getElementById("confirmDeleteBtn").onclick = confirmDeleteProduct;
+}
+
+function closeDeleteModal() {
+  const modal = document.getElementById('deleteModal');
+  const content = document.getElementById('deleteModalContent');
+  content.classList.add('opacity-0', 'scale-95');
+  setTimeout(() => {
+    modal.classList.add('hidden');
+  }, 150);
+}
+
+async function confirmDeleteProduct() {
+  const response = await fetch(`/product/${currentDeleteId}/delete`, {
+    method: "POST",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRFToken": getCSRFToken()
+    }
+  });
+
+  const data = await response.json();
+
+  if (data.status === "success") {
+    showToast("Produk berhasil dihapus!", "", "success");
+    fetchProductsFromServer();
+  } else {
+    showToast("Gagal menghapus produk!", "", "error");
+  }
+
+  closeDeleteModal();
+}
+
+
+
+
+document.addEventListener("click", function(e) {
+  // EDIT PRODUCT
+  if (e.target.classList.contains("edit-btn")) {
+    const productId = e.target.getAttribute("data-id");
+    console.log("Edit button clicked", productId);
+    editProduct(productId);
+  }
+
+  // DELETE PRODUCT
+  if (e.target.classList.contains("delete-btn")) {
+    const productId = e.target.getAttribute("data-id");
+    console.log("Delete button clicked", productId);
+    openDeleteModal(productId);
+  }
+});
+
+
+</script>
+
 {% endblock content %}

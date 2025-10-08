@@ -1,0 +1,165 @@
+<!-- Modal -->
+<div id="crudModal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+  <div id="crudModalContent" class="bg-white rounded-lg shadow-lg w-5/6 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3 max-h-screen overflow-y-auto">
+
+    <!-- Modal header -->
+    <div class="flex items-center justify-between p-4 border-b">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900">Tambah Produk Baru</h3>
+        <p class="text-sm text-gray-600 mt-1">Isi detail produk untuk ditambahkan ke toko kamu</p>
+      </div>
+      <button type="button" class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto" onclick="hideModal()">✖</button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="px-6 py-4 space-y-6 form-style">
+      <form id="productForm">
+        
+        <div class="mb-4">
+          <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+          <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Contoh: Jersey Home 2024" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="brand" class="block text-sm font-medium text-gray-700">Merek</label>
+          <input type="text" id="brand" name="brand" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Contoh: Adidas / Nike" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="price" class="block text-sm font-medium text-gray-700">Harga</label>
+          <input type="number" id="price" name="price" step="0.1" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Masukkan harga" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="stok" class="block text-sm font-medium text-gray-700">Stok</label>
+          <input type="number" id="stok" name="stok" min="0" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Jumlah stok tersedia" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="category" class="block text-sm font-medium text-gray-700">Kategori</label>
+          <input type="text" id="category" name="category" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Contoh: Jersey / Sepatu / Bola" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="thumbnail" class="block text-sm font-medium text-gray-700">URL Gambar Produk</label>
+          <input type="url" id="thumbnail" name="thumbnail" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="https://linkgambar.com/foto.jpg">
+        </div>
+
+        <div class="mb-4">
+          <textarea id="description" name="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Deskripsi produk..." required></textarea>
+        </div>
+
+        <div class="mb-4 flex items-center">
+          <input id="is_featured" name="is_featured" type="checkbox" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded">
+          <label for="is_featured" class="ml-2 text-sm font-medium text-gray-900">Tandai sebagai Produk Unggulan</label>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="flex flex-col sm:flex-row gap-4 p-6 border-t border-gray-200 rounded-b">
+      <button type="button" onclick="hideModal()" class="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors text-center">Batal</button>
+      <button id="productSubmitBtn" type="button" form="productForm" class="order-1 sm:order-2 flex-1 bg-gray-800 text-white px-6 py-3 rounded-md font-medium hover:bg-gray-900 transition-colors">Simpan Produk</button>
+    </div>
+
+  </div>
+
+  
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+ <div id="deleteModalContent" class="bg-white p-6 rounded-lg shadow-lg transform transition-all opacity-0 scale-95">
+   <h3 class="text-lg font-semibold">Hapus Produk?</h3>
+   <p class="text-sm text-gray-600 mt-2">Apakah kamu yakin ingin menghapus produk ini? Tindakan ini tidak bisa dibatalkan.</p>
+   <div class="mt-4 flex justify-end gap-3">
+     <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 rounded">Batal</button>
+     <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Hapus</button>
+   </div>
+ </div>
+</div>
+
+<script>
+ function showModal(mode = 'add', productData = null) {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+    const titleEl = modalContent.querySelector("h3");
+    const subtitleEl = modalContent.querySelector("p");
+    const submitButton = modalContent.querySelector("#productSubmitBtn");
+
+    if (!submitButton) {
+        console.error("Submit button not found! Pastikan id='productSubmitBtn' ada di modal.html");
+        return;
+    }
+
+    // Mode Tambah
+    if (mode === 'add') {
+        titleEl.textContent = "Tambah Produk Baru";
+        subtitleEl.textContent = "Isi detail produk untuk ditambahkan ke toko kamu";
+        submitButton.textContent = "Simpan Produk";
+        document.getElementById("productForm").reset();
+
+        submitButton.onclick = function(e) {
+            e.preventDefault();
+            addProductEntry();  
+        };
+    }
+
+    // Mode Edit
+    if (mode === 'edit' && productData) {
+        titleEl.textContent = "Edit Produk";
+        subtitleEl.textContent = "Ubah informasi produk kamu";
+        submitButton.textContent = "Update Produk";
+
+        document.getElementById("name").value = productData.name;
+        document.getElementById("brand").value = productData.brand;
+        document.getElementById("price").value = productData.price;
+        document.getElementById("stok").value = productData.stok;
+        document.getElementById("thumbnail").value = productData.thumbnail;
+        document.getElementById("description").value = productData.description;
+        document.getElementById("category").value = productData.category;
+        document.getElementById("is_featured").checked = productData.is_featured;
+
+        submitButton.onclick = function(e) {
+            e.preventDefault();
+            updateProductEntry(productData.id);
+        };
+    }
+
+    modal.classList.remove('hidden'); 
+    setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+    }, 50);
+}
+
+
+  function hideModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => modal.classList.add('hidden'), 150);
+  }
+ 
+
+  async function addProductEntry() {
+    await fetch("{% url 'main:add_product_entry_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#productForm')),
+    });
+
+    // Reset form
+    document.getElementById("productForm").reset();
+    hideModal();
+      
+    
+    showToast('Product added successfully!', '', 'success');
+
+    // Notify main.html to refresh product list
+    document.dispatchEvent(new CustomEvent('productAdded'));
+
+    return false;
+}
+</script>
