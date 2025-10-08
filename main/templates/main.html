@@ -169,6 +169,26 @@ function buildProductCardElement(product) {
   });
 
   
+
+  async function addProductEntry() {
+    await fetch("{% url 'main:add_product_entry_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#productForm')),
+    });
+
+    // Reset form
+    document.getElementById("productForm").reset();
+    hideModal();
+      
+    
+    showToast('Product added successfully!', '', 'success');
+
+    // Notify main.html to refresh product list
+    document.dispatchEvent(new CustomEvent('productAdded'));
+
+    return false;
+}
+  
   async function editProduct(productId) {
   console.log("Edit clicked", productId);
   const res = await fetch(`/json/${productId}/`);

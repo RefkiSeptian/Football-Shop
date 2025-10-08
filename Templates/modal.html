@@ -144,22 +144,22 @@
   }
  
 
-  async function addProductEntry() {
-    await fetch("{% url 'main:add_product_entry_ajax' %}", {
-      method: "POST",
-      body: new FormData(document.querySelector('#productForm')),
-    });
+//   async function addProductEntry() {
+//     await fetch("{% url 'main:add_product_entry_ajax' %}", {
+//       method: "POST",
+//       body: new FormData(document.querySelector('#productForm')),
+//     });
 
-    // Reset form
-    document.getElementById("productForm").reset();
-    hideModal();
+//     // Reset form
+//     document.getElementById("productForm").reset();
+//     hideModal();
       
     
-    showToast('Product added successfully!', '', 'success');
+//     showToast('Product added successfully!', '', 'success');
 
-    // Notify main.html to refresh product list
-    document.dispatchEvent(new CustomEvent('productAdded'));
+//     // Notify main.html to refresh product list
+//     document.dispatchEvent(new CustomEvent('productAdded'));
 
-    return false;
-}
+//     return false;
+// }
 </script>
