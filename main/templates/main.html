@@ -181,7 +181,7 @@ function buildProductCardElement(product) {
     hideModal();
       
     
-    showToast('Product added successfully!', '', 'success');
+    showToast('Product added successfully!', 'success'); 
 
     // Notify main.html to refresh product list
     document.dispatchEvent(new CustomEvent('productAdded'));
