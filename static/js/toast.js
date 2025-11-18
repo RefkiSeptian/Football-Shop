@@ -7,6 +7,8 @@ function showToast(message, type = 'success', duration = 3000) {
     // Override jika error
     if (type === 'error') {
         bgClass = 'bg-red-600 text-white border border-red-700';
+    } else if (type === "warning") {
+        bgClass = "bg-yellow-500 text-black border border-yellow-600";
     }
 
     toast.className = `

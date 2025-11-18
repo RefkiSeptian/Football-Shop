@@ -74,6 +74,9 @@
     </div>
 </div>
 
+{% endblock content %}
+
+ {% block script %}
 <script>
 (async function() {
     const PRODUCT_API_ENDPOINT = "{% url 'main:show_json_by_id' product.id %}";
@@ -103,6 +106,8 @@
         document.getElementById("error-state").classList.remove("hidden");
     }
 })();
+
 </script>
 
-{% endblock content %}
+{% endblock script %}
+

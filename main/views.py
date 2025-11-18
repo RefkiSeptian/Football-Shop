@@ -11,6 +11,10 @@ import datetime
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+import requests
+from django.utils.html import strip_tags
+import json
+from django.contrib.auth import logout as auth_logout
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -81,9 +85,9 @@ def show_json(request):
 
     return JsonResponse(data, safe=False)
 
-def show_xml_by_id(request, news_id):
+def show_xml_by_id(request, Product_id):
    try:
-       product_item = Product.objects.filter(pk=news_id)
+       product_item = Product.objects.filter(pk=Product_id)
        xml_data = serializers.serialize("xml", product_item)
        return HttpResponse(xml_data, content_type="application/xml")
    except Product.DoesNotExist:
@@ -108,6 +112,28 @@ def show_json_by_id(request, product_id):
         return JsonResponse(data)
     except Product.DoesNotExist:
         return JsonResponse({'detail': 'Not found'}, status=404)
+    
+# def show_json_by_stok(request, productStok):
+#     product = Product.objects.all().filter(stok__gte=productStok)
+#     print(productStok)
+#     datas = []
+#     for pr in product:
+#         data = {
+#             'id': str(pr.id),
+#             'name': pr.name,
+#             'price': float(pr.price),
+#             'description': pr.description,
+#             'category': pr.category,
+#             'thumbnail': pr.thumbnail,
+#             'is_featured': pr.is_featured,
+#             'brand': pr.brand,
+#             'stok': pr.stok,
+#             'user_id': pr.user_id,
+#             'user_username': pr.user.username if pr.user_id else None,
+#         }
+#         datas.append(data)
+
+#     return JsonResponse(datas,safe=False)
    
 
 def register(request):
@@ -137,10 +163,10 @@ def register(request):
 
 def login_user(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = AuthenticationForm(request, data=request.POST)
 
         # Jika request dari AJAX (fetch)
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             if form.is_valid():
                 user = form.get_user()
                 login(request, user)
@@ -257,3 +283,53 @@ def add_product_entry_ajax(request):
     new_product.save()
 
     return HttpResponse(b"CREATED", status=201)
+
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+    
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        name = strip_tags(data.get("name", ""))  # Strip HTML tags
+        description = strip_tags(data.get("description", ""))  # Strip HTML tags
+        category = data.get("category", "")
+        thumbnail = data.get("thumbnail", "")
+        is_featured = data.get("is_featured", False)
+        brand = data.get("brand", "")
+        stok = data.get("stok","")
+        price = data.get("price","")
+        user = request.user
+        
+        new_Product = Product(
+            name=name, 
+            description=description,
+            category=category,
+            thumbnail=thumbnail,
+            is_featured=is_featured,
+            stok = stok,
+            price = price,
+            brand = brand,
+            user=user
+        )
+        new_Product.save()
+        
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    

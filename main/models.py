@@ -15,7 +15,7 @@ class Product(models.Model):
         ('ball', 'Football'),
         ('equipment', 'Equipment'),
         ('accessories', 'Accessories'),
-        ('training', 'Training Gear'),
+        ('others', 'Other things'),
     ]
     
     # Field - field lain (atribut class)

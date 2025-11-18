@@ -32,9 +32,6 @@
       </div>
 
       <div class="flex items-center space-x-4 text-sm text-gray-500">
-        <div>NPM: {{ npm }}</div>
-        <div>Name: {{ name }}</div>
-        <div>Class: {{ class }}</div>
         {% if user.is_authenticated %}
           <div>Last login: {{ last_login }}</div>
         {% endif %}
@@ -42,11 +39,13 @@
 
       <div>
         <button onclick="showModal()" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
-          + Add Product
+          Add Product
         </button>
-        <a href="{% url 'main:logout' %}" class="ml-2 inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-800 transition-colors">
+        <button 
+          onclick="logoutUser()"
+          class="ml-2 inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-800 transition-colors">
           Logout
-        </a>
+        </button>
       </div>
     </div>
 
@@ -65,12 +64,14 @@
         + Add Product
       </button>
     </div>
-
+    
     <div id="grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
+    
   </div>
 </div>
+{% endblock content %}
 
+{% block script %}
 <!-- SCRIPT AJAX -->
 <script>
   let currentMode = "add"; // default add
@@ -104,7 +105,8 @@
 
 function buildProductCardElement(product) {
   const card = document.createElement('div');
-  card.className = 'bg-white p-4 border rounded-lg shadow';
+  card.className = 'bg-white p-4 border rounded-lg shadow cursor-pointer hover:shadow-lg transition';
+  card.setAttribute("data-id", product.id);
 
   card.innerHTML = `
     <img src="${product.thumbnail || '/static/image/no-product.png'}" class="w-full h-40 object-cover rounded mb-2">
@@ -118,7 +120,7 @@ function buildProductCardElement(product) {
         <button class="edit-btn text-blue-600 hover:underline text-sm" data-id="${product.id}">Edit</button>
         <button class="delete-btn text-red-600 hover:underline text-sm" data-id="${product.id}">Delete</button>
       </div>
-    ` : ''}
+    ` : ``}
   `;
 
   return card;
@@ -286,6 +288,13 @@ async function confirmDeleteProduct() {
 
 
 document.addEventListener("click", function(e) {
+   // Klik kartu → buka detail
+  const card = e.target.closest("[data-id]");
+  if (card && !e.target.classList.contains("edit-btn") && !e.target.classList.contains("delete-btn")) {
+      const productId = card.getAttribute("data-id");
+      window.location.href = `/product/${productId}/`;
+  }
+
   // EDIT PRODUCT
   if (e.target.classList.contains("edit-btn")) {
     const productId = e.target.getAttribute("data-id");
@@ -299,9 +308,30 @@ document.addEventListener("click", function(e) {
     console.log("Delete button clicked", productId);
     openDeleteModal(productId);
   }
-});
+}
+
+);
+async function logoutUser() {
+      const response = await fetch("{% url 'main:logout' %}", {
+          method: "POST",
+          headers: { 
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRFToken": getCSRFToken()
+          }
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+          showToast(data.message, "success");
+          setTimeout(() => window.location.href = "{% url 'main:login' %}", 1000);
+      } else {
+          showToast("Logout gagal!", "error");
+      }
+  }
 
 
 </script>
 
-{% endblock content %}
+
+{% endblock script %}
