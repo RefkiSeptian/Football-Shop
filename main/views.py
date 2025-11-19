@@ -107,7 +107,7 @@ def show_json_by_id(request, product_id):
             'brand': product.brand,
             'stok': product.stok,
             'user_id': product.user_id,
-            'user_username': product.user.username if product.user_id else None,
+            'username': product.user.username,
         }
         return JsonResponse(data)
     except Product.DoesNotExist:
@@ -332,4 +332,26 @@ def create_product_flutter(request):
         return JsonResponse({"status": "success"}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
+    
+@login_required
+def show_my_products_json(request):
+    # Filter produk berdasarkan user yang login
+    products = Product.objects.filter(user=request.user)
+    
+    data = []
+    for product in products:
+        data.append({
+            "id": str(product.id),
+            "name": product.name,
+            "price": int(product.price),
+            "description": product.description,
+            "category": product.category,
+            "thumbnail": product.thumbnail,
+            "is_featured": product.is_featured,
+            "brand": product.brand,
+            "stok": product.stok,
+            "user_id": product.user.id,
+        })
+    
+    return JsonResponse(data, safe=False)
     
